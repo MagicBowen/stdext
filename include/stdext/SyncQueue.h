@@ -10,6 +10,7 @@ STDEXT_NS_BEGIN
 template<typename T>
 struct SyncQueue
 {
+    SyncQueue() = default;
     SyncQueue(const SyncQueue&) = delete;
     SyncQueue& operator=(const SyncQueue&) = delete;
 
@@ -33,23 +34,23 @@ struct SyncQueue
 
     T take()
     {
-        SYNCHRONIZED(mutex)
-        {
-            notEmpty.wait(LOCKER(mutex).getLocker(), [this]{return queue.empty();});
-            if(queue.empty()) continue;
+        std::unique_lock<std::mutex> lock(mutex);
 
-            T front(std::move(queue.front()));
-            queue.pop_front();
-            return front;
+        while(true)
+        {
+            notEmpty.wait(lock, [this]{return !queue.empty();});
+            if(!queue.empty()) break;
         }
+
+        T front(std::move(queue.front()));
+        queue.pop_front();
+        return front;
     }
 
     size_t size() const
     {
-        SYNCHRONIZED(mutex)
-        {
-            return queue.size();
-        }
+        std::unique_lock<std::mutex> lock(mutex);
+        return queue.size();
     }
 
 private:
