@@ -7,15 +7,15 @@ namespace
 {
     std::string toFixedSizedHexStr(unsigned int i)
     {
-        std::stringstream oss;
+        std::stringstream ss;
 
-        oss.flags (std::ios::hex);
-        oss.fill('0');
-        oss.width(2);
+        ss.flags (std::ios::hex);
+        ss.fill('0');
+        ss.width(2);
 
-        oss << i;
+        ss << i;
 
-        return oss.str();
+        return ss.str();
     }
 
     std::string toFixedSizedHexStr(unsigned char val)
@@ -27,31 +27,31 @@ namespace
 //////////////////////////////////////////
 std::string toBufferString(void* buf, size_t size)
 {
-   std::stringstream oss;
+   std::stringstream ss;
 
    size_t sz = std::min(size, size_t(4));
 
    unsigned char* p = (unsigned char*)buf;
 
-   oss << "[";
+   ss << "[";
 
    for(size_t i=0; i < sz; i++)
    {
-      oss << toFixedSizedHexStr(p[i]);
+      ss << toFixedSizedHexStr(p[i]);
       if(i != sz - 1)
       {
-         oss << " ";
+         ss << " ";
       }
    }
 
    if(size > size_t(4))
    {
-      oss << " ...";
+      ss << " ...";
    }
 
-   oss << "]";
+   ss << "]";
 
-   return oss.str();
+   return ss.str();
 }
 
 //////////////////////////////////////////
@@ -59,17 +59,17 @@ std::string toPointerString(void* p)
 {
     if(p == 0) return "nil";
 
-    std::stringstream oss;
+    std::stringstream ss;
 
-    oss << "0x";
+    ss << "0x";
 
-    oss.flags (std::ios::hex);
-    oss.fill('0');
-    oss.width(8);
+    ss.flags (std::ios::hex);
+    ss.fill('0');
+    ss.width(8);
 
-    oss << reinterpret_cast<unsigned long>(p);
+    ss << reinterpret_cast<unsigned long>(p);
 
-    return oss.str();
+    return ss.str();
 }
 
 //////////////////////////////////////////
@@ -81,22 +81,22 @@ std::string toString(const std::nullptr_t& p)
 //////////////////////////////////////////
 std::string toString(const std::string& s)
 {
-    std::stringstream oss;
-    oss << s;
-    return oss.str();
+    std::stringstream ss;
+    ss << s;
+    return ss.str();
 }
 
 //////////////////////////////////////////
 std::string toString(char* s)
 {
-    std::stringstream oss;
+    std::stringstream ss;
 
     if(s == 0)
-        oss << "nil";
+        ss << "nil";
     else
-        oss << s;
+        ss << s;
 
-    return oss.str();
+    return ss.str();
 }
 
 //////////////////////////////////////////
@@ -106,9 +106,9 @@ std::string toString(const char* s)
 //////////////////////////////////////////
 std::string toString(bool b)
 {
-    std::stringstream oss;
-    oss << (b ? "true" : "false");
-    return oss.str();
+    std::stringstream ss;
+    ss << (b ? "true" : "false");
+    return ss.str();
 }
 
 namespace
@@ -116,13 +116,13 @@ namespace
     template <typename T>
     std::string toValStr(T val)
     {
-        std::stringstream oss;
+        std::stringstream ss;
 
-        oss.flags(std::ios::fixed);
-        oss.precision(2);
+        ss.flags(std::ios::fixed);
+        ss.precision(2);
 
-        oss << val;
-        return oss.str();
+        ss << val;
+        return ss.str();
     }
 
     std::string toValStr(char val)
